@@ -1,0 +1,24 @@
+apt update
+apt install apache2 openssl ssl-cert
+
+cd /etc/apache2/sites-available
+
+cp default-ssl.conf webssl.conf
+
+nano webssl.conf 
+ SSLCertificateFile      /etc/apache2/ssl/apache.crt
+ SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+
+mkdir /etc/apache2/ssl
+
+openssl req -x509 -newkey rsa:4096 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -nodes -days 365
+
+/usr/sbin/a2dissite 000-default.conf
+
+/usr/sbin/a2ensite webssl.conf
+
+/usr/sbin/a2enmod ssl
+
+systemctl restart apache2
+
+systemctl reload apache2
